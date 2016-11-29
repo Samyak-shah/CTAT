@@ -1,0 +1,449 @@
+(require* wmeTypes "wmeTypes.clp")
+
+(defrule eq1-lhs1-step1
+    (declare (salience 1000))
+    ?prob <- (problem(given-equation ?ge)(equation ?eq1 ?))
+    ?eq1 <- (equation-1 (eq1-lhs ?s1)(interface-row-eq1 $? ?ie1 $?))
+    ?s1 <- (left-hand-side-1 (fact-cnr1 ?c)(fact-vnr1 ?v)(variable1 ?var))
+    ?ie1 <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat ?v ?var))
+    (bind ?n2 (str-cat ?n1 "+"))
+    (bind ?n3 (str-cat ?n2 ?c))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie1 (value ?n3))
+    )
+
+(defrule eq1-rhs1-step1
+    (declare (salience 1000))
+    ?prob <- (problem(given-equation ?ge)(equation ?eq1 ?))
+    ?eq1 <- (equation-1 (eq1-rhs ?s1)(interface-row-eq1 $? ?ie2 $?))
+    ?s1 <- (right-hand-side-1 (fact-cnr2 ?c)(fact-vnr2 ?v)(variable2 ?var))
+    ?ie2 <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat ?v ?var))
+    (bind ?n2 (str-cat ?n1 "+"))
+    (bind ?n3 (str-cat ?n2 ?c))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie2 (value ?n3))
+    )
+
+
+(defrule eq1-rhs-step2-form1
+    (declare (salience 800))
+    ?prob <- (problem(given-equation ?ge)(equation ?eq1 ?))
+    ?eq1 <- (equation-1 (eq1-rhs ?s1)(interface-row-eq1 $? ?ie $?))
+    ?s1 <- (right-hand-side-1 (fact-cnr1 ?c1)(fact-cnr2 ?c2)(fact-vnr2 ?v)(variable2 ?var))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+    (bind ?n1 (str-cat ?v ?var ))
+    (bind ?n2 (str-cat ?n1 "+" ?c2 "-" ?c1))
+    (predict ?sel UpdateTextField ?n2)
+    (modify ?ie (value ?n2))
+    
+    )
+
+
+
+
+(defrule eq1-lhs-step2-form1
+    (declare (salience 800))
+    ?prob <- (problem(given-equation ?ge)(equation ?eq1 ?))
+    ?eq1 <- (equation-1(eq1-lhs ?s1)(interface-row-eq1 $? ?ie $?))
+    ?s1 <- (left-hand-side-1 (fact-cnr1 ?c)(fact-vnr1 ?v)(variable1 ?var))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+    (bind ?n1 (str-cat ?v ?var))
+    (predict ?sel UpdateTextField ?n1)
+    (modify ?ie (value ?n1))
+        
+    )
+
+(defrule eq1-lhs-step3-form1
+    (declare (salience 500))
+    ?prob <- (problem (given-equation ?ge)(equation ?eq1 ?)) 
+    ?eq1 <- (equation-1(eq1-lhs ?s1)(interface-row-eq1 $? ?ie $?))
+    ?s1 <- (left-hand-side-1 (fact-cnr1 ?c)(fact-vnr1 ?v)(variable1 ?var))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat ?v ?var))
+    (predict ?sel UpdateTextField ?n1)
+    (modify ?ie (value ?n1))
+    )
+
+
+(defrule eq1-rhs-step3-form1
+    (declare (salience 500))
+    ?prob <- (problem(given-equation ?ge)(equation ?eq1 ?))
+    ?eq1 <- (equation-1(eq1-rhs ?s1)(interface-row-eq1 $? ?ie $?))
+    ?s1 <- (right-hand-side-1 (fact-cnr1 ?c1)(fact-vnr2 ?v)(variable2 ?var)(fact-cnr2 ?c2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat ?v ?var))
+    (bind ?n2 (- ?c2 ?c1))
+    ;;(bind ?n3 (str-cat ?n1 ?n2))
+    ;;(predict ?sel UpdateTextField ?n3)
+    ;;(modify ?ie (value ?n3))
+    
+    (if (> ?n2 0) then 
+       (bind ?n3 (str-cat ?n1 "+" ?n2))
+    elif ( = ?n2 0) then
+       (bind ?n3 ?n1)
+     else
+     (bind ?n3 (str-cat ?n1 ?n2)))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie (value ?n3))
+    )
+
+
+
+(defrule eq1-lhs-step4-form1
+    (declare (salience 400))
+    ?prob <- (problem (given-equation ?ge)(equation ?eq1 ?)) 
+    ?eq1 <- (equation-1(eq1-lhs ?s1)(interface-row-eq1 $? ?ie $?))
+    ?s1 <- (left-hand-side-1 (fact-cnr1 ?c)(fact-vnr1 ?v1)(variable1 ?var1)(fact-vnr2 ?v2)(variable2 ?var2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat ?v1 ?var1))
+    (bind ?n2 (str-cat ?v2 ?var2))
+    (bind ?n3 (str-cat ?n1 "-" ?n2))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie (value ?n3))
+    ) 
+
+(defrule eq1-rhs-step4-form1
+    (declare (salience 400))
+    ?prob <- (problem (given-equation ?ge) (equation ?eq1 ?))
+    ?eq1 <- (equation-1(eq1-rhs ?s1)(interface-row-eq1 $? ?ie $?))
+    ?s1 <- (right-hand-side-1 (fact-cnr1 ?c1)(fact-cnr2 ?c2)) 
+    ?ie <- (interface-element(name ?sel)(value nil))
+   =>
+    
+    (bind ?n1 (- ?c2 ?c1))
+    (predict ?sel UpdateTextField ?n1)
+    (modify ?ie (value ?n1))
+    
+    )
+
+
+
+
+
+   (defrule eq1-lhs-step5-form1
+    (declare (salience 300))
+    ?prob <- (problem (given-equation ?ge) (equation ?eq1 ?))
+    ?eq1 <- (equation-1(eq1-lhs ?s1)(interface-row-eq1 $? ?ie $?))
+    ?s1 <- (left-hand-side-1 (fact-vnr1 ?v1)(fact-vnr2 ?v2)(variable1 ?var1)) 
+    ?ie <- (interface-element(name ?sel)(value nil))
+   =>
+    
+    (bind ?n1 (- ?v1 ?v2))
+    (bind ?n2 (str-cat ?n1 ?var1 ))
+    (predict ?sel UpdateTextField ?n2)
+    (modify ?ie (value ?n2))
+    
+    )
+
+
+
+
+ (defrule eq1-rhs-step5-form1
+    (declare (salience 300))
+    ?prob <- (problem (given-equation ?ge) (equation ?eq1 ?))
+    ?eq1 <- (equation-1(eq1-rhs ?s1)(interface-row-eq1 $? ?ie $?))
+    ?s1 <- (right-hand-side-1 (fact-cnr1 ?c1)(fact-cnr2 ?c2)) 
+    ?ie <- (interface-element(name ?sel)(value nil))
+   =>
+    
+    (bind ?n1 (- ?c2 ?c1))
+    (predict ?sel UpdateTextField ?n1)
+    (modify ?ie (value ?n1)))
+
+
+(defrule eq1-lhs-step6-form1
+    (declare (salience 200))
+    ?prob1 <- (problem (given-equation ?ge)(equation ?eq1 ?))
+    ?eq1 <- (equation-1(eq1-lhs ?s1)(interface-row-eq1 $? ?ie $?))
+    ?s1 <- (left-hand-side-1 (variable1 ?var1))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+   =>
+     
+        (bind ?n1 ?var1)
+        (predict ?sel UpdateTextField ?n1)
+        (modify ?ie (value ?n1))
+        )
+
+(defrule eq1-rhs-step6-form1
+    (declare (salience 200))
+    ?prob1 <- (problem (given-equation ?ge)(equation ?eq1 ?))
+    ?eq1 <- (equation-1 (eq1-rhs ?s1) (interface-row-eq1 $? ?ie $?))
+    ?s1 <- (right-hand-side-1 (fact-cnr1 ?c1)(fact-cnr2 ?c2)(fact-vnr1 ?v1)(fact-vnr2 ?v2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+   (bind ?n1 (- ?c1 ?c2))
+   (bind ?n2 (- ?v2 ?v1))
+   (bind ?n3 (/ ?n1 ?n2))
+   (predict ?sel UpdateTextField ?n3)
+   (modify ?ie (value ?n3))
+            
+       
+    )
+
+(defrule eq2-lhs1-step1
+    (declare (salience 1000))
+    ?prob <- (problem(given-equation ?ge)(equation $? ?eq2))
+    ?eq2 <- (equation-2 (eq2-lhs ?s)(interface-row-eq2 $? ?ie1 $?))
+    ?s <- (left-hand-side-2 (fact-cnr1 ?c)(fact-vnr1 ?v)(variable1 ?var))
+    ?ie1 <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+    (bind ?n1 (str-cat ?v ?var))
+    (bind ?n2 (str-cat ?n1 "+"))
+    (bind ?n3 (str-cat ?n2 ?c))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie1 (value ?n3))
+    )
+
+(defrule eq2-rhs1-step1
+    (declare (salience 1000))
+    ?prob <- (problem(given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2 (eq2-rhs ?s1)(interface-row-eq2 $? ?ie2 $?))
+    ?s1 <- (right-hand-side-2 (fact-cnr2 ?c)(fact-vnr2 ?v)(variable2 ?var))
+    ?ie2 <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat "-" "(" ?v ?var))
+    (bind ?n2 (str-cat ?n1 "+"))
+    (bind ?n3 (str-cat ?n2 ?c ")"))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie2 (value ?n3))
+    )
+
+(defrule eq2-lhs2-step2-form1
+    (declare (salience 800))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2 (eq2-lhs ?s1)(interface-row-eq2 $? ?ie1 $?))
+    ?s1 <- (left-hand-side-2 (fact-cnr1 ?c)(fact-vnr1 ?v)(variable1 ?var))
+    ?ie1 <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat ?v ?var))
+    (bind ?n2 (str-cat ?n1 "+"))
+    (bind ?n3 (str-cat ?n2 ?c))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie1 (value ?n3))
+)
+
+
+(defrule eq2-rhs2-step2-form1
+    (declare (salience 800))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2 (eq2-rhs ?s1)(interface-row-eq2 $? ?ie2 $?))
+    ?s1 <- (right-hand-side-2 (fact-cnr2 ?c)(fact-vnr2 ?v)(variable2 ?var))
+    ?ie2 <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat "-" ?v ))
+    (bind ?n2 (str-cat ?n1 ?var))
+    (bind ?n3 (str-cat ?n2 "-"))
+    (bind ?n4 (str-cat ?n3 ?c))
+    (predict ?sel UpdateTextField ?n4)
+    (modify ?ie2 (value ?n4))
+    )
+
+
+
+(defrule eq2-lhs-step3-form1
+    (declare (salience 500))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2)) 
+    ?eq2 <- (equation-2(eq2-lhs ?s1)(interface-row-eq2 $? ?ie $?))
+    ?s1 <- (left-hand-side-2 (fact-cnr1 ?c)(fact-vnr1 ?v)(variable1 ?var))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat ?v ?var))
+    (predict ?sel UpdateTextField ?n1)
+    (modify ?ie (value ?n1))
+    )
+
+
+
+
+(defrule eq2-rhs2-step3-form1
+    (declare (salience 500))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2 (eq2-rhs ?s1)(interface-row-eq2 $? ?ie2 $?))
+    ?s1 <- (right-hand-side-2 (fact-cnr1 ?c1)(fact-vnr1 ?v1)(fact-cnr2 ?c2)(fact-vnr2 ?v2)(variable2 ?var))
+    ?ie2 <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat "-" ?v2 ?var))
+    (bind ?n2 (str-cat ?n1 "-" ?c2))
+    (bind ?n3 (str-cat ?n2 "-" ?c1))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie2 (value ?n3))
+    )
+
+
+
+(defrule eq2-lhs-step4-form1
+    (declare (salience 400))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2(eq2-lhs ?s1)(interface-row-eq2 $? ?ie $?))
+    ?s1 <- (left-hand-side-2  (variable1 ?var)(fact-vnr1 ?v1))
+    ?ie <- (interface-element (name ?sel)(value nil))
+=>
+    (bind ?n1 (str-cat ?v1 ?var))
+    (predict ?sel UpdateTextField ?n1)
+    (modify ?ie (value ?n1))
+    
+    )
+
+
+
+(defrule eq2-rhs-step4-form1
+    (declare (salience 400))
+    ?prob <- (problem(given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2(eq2-rhs ?s1)(interface-row-eq2 $? ?ie $?))
+    ?s1 <- (right-hand-side-2 (fact-cnr1 ?c1)(fact-vnr2 ?v)(variable1 ?var)(fact-cnr2 ?c2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    =>
+    
+    (bind ?n1 (str-cat ?v ?var))
+    (bind ?n2 (+ ?c1 ?c2))
+    (bind ?n3 (str-cat "-" ?n2))
+    (bind ?n4 (str-cat "-" ?n1 ?n3))
+    ;;(bind ?n3 (str-cat ?n1 ?n2))
+    ;;(predict ?sel UpdateTextField ?n3)
+    ;;(modify ?ie (value ?n3))
+    
+    (predict ?sel UpdateTextField ?n4)
+    (modify ?ie (value ?n4))
+    )
+
+
+
+(defrule eq2-lhs-step5-form1
+    (declare (salience 300))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2(eq2-lhs ?s1)(interface-row-eq2 $? ?ie $?))
+    ?s1 <- (left-hand-side-2 (fact-vnr1 ?v1)(fact-vnr2 ?v2)(variable1 ?var1)(variable2 ?var2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+    (bind ?n1 ( str-cat ?v1 ?var1))
+    (bind ?n2 (str-cat ?v2 ?var2))
+    (bind ?n3 (str-cat ?n2 "+" ?n1))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie (value ?n3)) 
+    )
+
+(defrule eq2-lhs-step5-form2
+    (declare (salience 300))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2(eq2-lhs ?s1)(interface-row-eq2 $? ?ie $?))
+    ?s1 <- (left-hand-side-2 (fact-vnr1 ?v1)(fact-vnr2 ?v2)(variable1 ?var1)(variable2 ?var2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+    (bind ?n1 ( str-cat ?v1 ?var1))
+    (bind ?n2 (str-cat ?v2 ?var2))
+    (bind ?n3 (str-cat ?n1 "+" ?n2))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie (value ?n3)) 
+    )
+
+(defrule eq2-rhs-step5-form2
+    (declare (salience 300))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2(eq2-rhs ?s1)(interface-row-eq2 $? ?ie $?))
+    ?s1 <- (right-hand-side-2 (fact-cnr1 ?c1)(fact-cnr2 ?c2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+    (bind ?n2 (+ ?c1 ?c2))
+    (bind ?n3 (str-cat "-" ?n2))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie (value ?n3))
+        )
+
+
+
+
+(defrule eq2-lhs-step6
+    (declare (salience 200))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2(eq2-lhs ?s1)(interface-row-eq2 $? ?ie $?))
+    ?s1 <- (left-hand-side-2 (fact-vnr1 ?v1)(fact-vnr2 ?v2)(variable1 ?var1)(variable2 ?var2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+    (bind ?n1 ( + ?v1 ?v2))
+    (bind ?n2 (str-cat ?n1 ?var1))
+    (predict ?sel UpdateTextField ?n2)
+    (modify ?ie (value ?n2)) 
+    )
+
+(defrule eq2-rhs-step6
+    (declare (salience 200))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2(eq2-rhs ?s1)(interface-row-eq2 $? ?ie $?))
+    ?s1 <- (right-hand-side-2 (fact-cnr1 ?c1)(fact-cnr2 ?c2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+    (bind ?n2 (+ ?c1 ?c2))
+    (bind ?n3 (str-cat "-" ?n2))
+    (predict ?sel UpdateTextField ?n3)
+    (modify ?ie (value ?n3))
+        )
+
+(defrule eq2-lhs-step7
+    (declare (salience 100))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2(eq2-lhs ?s1)(interface-row-eq2 $? ?ie $?))
+    ?s1 <- (left-hand-side-2 (fact-vnr1 ?v1)(fact-vnr2 ?v2)(variable1 ?var1)(variable2 ?var2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+    (bind ?n1 ?var1 )
+    (predict ?sel UpdateTextField ?n1)
+    (modify ?ie (value ?n1)) 
+    )
+    
+
+(defrule eq2-rhs-step7
+    (declare (salience 100))
+    ?prob <- (problem (given-equation ?ge)(equation ? ?eq2))
+    ?eq2 <- (equation-2(eq2-rhs ?s1)(interface-row-eq2 $? ?ie $?))
+    ?s1 <- (right-hand-side-2 (fact-cnr1 ?c1)(fact-cnr2 ?c2)(fact-vnr1 ?v1)(fact-vnr2 ?v2))
+    ?ie <- (interface-element (name ?sel)(value nil))
+    
+    =>
+    
+    (bind ?n2 (+ ?c1 ?c2))
+    (bind ?n3 (+ ?v1 ?v2))
+    (bind ?n4 (str-cat "-" ?n2 "/" ?n3))
+    (predict ?sel UpdateTextField ?n4)
+    (modify ?ie (value ?n4))
+
+)

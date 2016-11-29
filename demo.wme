@@ -1,0 +1,96 @@
+(require* wmeTypes "wmeTypes.clp")
+
+(assert (MAIN::initial-fact))
+
+;;(bind ?question-stmt " | ")
+(bind ?question "|2x + 5| = 3x + 4")
+
+(bind ?s1 (assert (left-hand-side-1
+            (variable1 x)
+           (fact-vnr1 2)
+           (fact-cnr1 5)
+            (fact-cnr2 4)
+            (fact-vnr2 3)
+            (variable2 x))))
+
+(bind ?s2 (assert (right-hand-side-1
+            (variable2 x)
+            (fact-vnr2 3)
+            (fact-cnr2 4)
+            (fact-cnr1 5)
+            (fact-vnr1 2)
+            (variable1 x))))
+
+(bind ?s3 (assert (left-hand-side-2 
+            (variable1 x)
+           (fact-vnr1 2)
+           (fact-cnr1 5)
+            (fact-cnr2 4)
+            (fact-vnr2 3)
+            (variable2 x))))
+
+(bind ?s4 (assert (right-hand-side-2
+            (variable2 x)
+           (fact-vnr2 3)
+           (fact-cnr2 4)
+            (fact-cnr1 5)
+            (fact-vnr1 2)
+            (variable1 x))))
+
+(bind ?eq1 (assert(equation-1
+            (eq1-lhs ?s1 )
+            (eq1-rhs ?s2)
+            )))
+    
+(bind ?eq2 (assert (equation-2
+                (eq2-lhs ?s3)
+                 (eq2-rhs ?s4))))
+
+(bind ?prob (assert (problem
+        (given-equation "|2x + 5| = 3x + 4")
+            
+            (equation ?eq1 ?eq2 ))))
+
+
+(bind ?ie0 (assert (interface-element (name question_box)(value ?question))))
+
+(bind ?ie1 (assert (interface-element (name E1LHS1))))
+(bind ?ie2 (assert (interface-element (name E1LHS2))))
+(bind ?ie3 (assert (interface-element (name E1LHS3))))
+(bind ?ie4 (assert (interface-element (name E1LHS4))))
+(bind ?ie5 (assert (interface-element (name E1LHS5))))
+(bind ?ie6 (assert (interface-element (name E1LHS6))))
+(bind ?ie7 (assert (interface-element (name E1LHS7))))
+
+(bind ?ie8 (assert (interface-element (name E1RHS1))))
+(bind ?ie9 (assert (interface-element (name E1RHS2))))
+(bind ?ie10 (assert (interface-element (name E1RHS3))))
+(bind ?ie11 (assert (interface-element (name E1RHS4))))
+(bind ?ie12 (assert (interface-element (name E1RHS5))))
+(bind ?ie13 (assert (interface-element (name E1RHS6))))
+(bind ?ie14 (assert (interface-element (name E1RHS7))))
+
+(bind ?ie15 (assert (interface-element (name E2LHS1))))
+(bind ?ie16 (assert (interface-element (name E2LHS2))))
+(bind ?ie17 (assert (interface-element (name E2LHS3))))
+(bind ?ie18 (assert (interface-element (name E2LHS4))))
+(bind ?ie19 (assert (interface-element (name E2LHS5))))
+(bind ?ie20 (assert (interface-element (name E2LHS6))))
+(bind ?ie21 (assert (interface-element (name E2LHS7))))
+
+(bind ?ie22 (assert (interface-element (name E2RHS1))))
+(bind ?ie23 (assert (interface-element (name E2RHS2))))
+(bind ?ie24 (assert (interface-element (name E2RHS3))))
+(bind ?ie25 (assert (interface-element (name E2RHS4))))
+(bind ?ie26 (assert (interface-element (name E2RHS5))))
+(bind ?ie27 (assert (interface-element (name E2RHS6))))
+(bind ?ie28 (assert (interface-element (name E2RHS7))))
+
+
+(modify ?eq1
+    (interface-row-eq1 ?ie1 ?ie2 ?ie3 ?ie4 ?ie5 ?ie6 ?ie7 ?ie8 ?ie9 ?ie10 ?ie11 ?ie12 ?ie13 ?ie14)
+      )
+
+(modify ?eq2
+    (interface-row-eq2 ?ie15 ?ie16 ?ie17 ?ie18 ?ie19 ?ie20 ?ie21 ?ie22 ?ie23 ?ie24 ?ie25 ?ie26 ?ie27 ?ie28)
+ )
